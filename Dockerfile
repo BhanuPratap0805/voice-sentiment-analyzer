@@ -7,11 +7,13 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
+# Install CPU-only PyTorch first to avoid downloading huge GPU wheels
+RUN pip install --no-cache-dir torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+
 # Copy requirements file
 COPY requirements.txt .
 
-# Install Python dependencies
-# Use --no-cache-dir to keep image size small
+# Install other dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
