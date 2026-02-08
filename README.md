@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# Voice-Sentiment-Analyzer
-=======
 # Voice Sentiment Analyzer
 
 A web application that analyzes voice sentiment from audio files using OpenAI's Whisper for transcription and a Hugging Face model for emotion classification.
@@ -37,11 +34,3 @@ This method ensures all system dependencies (like `ffmpeg`) are installed.
     ```bash
     python app.py
     ```
-
-## Deployment on Render
-This repository includes a `render.yaml` Blueprint for easy deployment.
-
-1.  Create a new **Blueprint** on [Render](https://dashboard.render.com/).
-2.  Connect this repository.
-3.  Render will automatically build and deploy the application using the Docker configuration.
->>>>>>> 016c179 (Add README and switch to main branch)
