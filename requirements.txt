@@ -2,3 +2,5 @@ flask
 openai-whisper
 transformers
 gunicorn
+streamlit
+plotly
