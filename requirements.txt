@@ -6,4 +6,3 @@ gunicorn
 streamlit
 plotly
 pandas
-audio-recorder-streamlit
