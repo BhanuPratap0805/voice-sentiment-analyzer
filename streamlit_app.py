@@ -6,7 +6,11 @@ import tempfile
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from audio_recorder_streamlit import audio_recorder
+try:
+    from audio_recorder_streamlit import audio_recorder
+    HAS_RECORDER = True
+except ImportError:
+    HAS_RECORDER = False
 
 st.set_page_config(
     page_title="Voice Sentiment Analyzer",
@@ -230,18 +234,24 @@ with tab_upload:
         audio_suffix = os.path.splitext(uploaded_file.name)[1] or ".wav"
 
 with tab_mic:
-    st.caption("Click the microphone icon below to start recording. Click again to stop.")
-    recorded = audio_recorder(
-        text="",
-        recording_color="#e74c3c",
-        neutral_color="#3498db",
-        icon_size="2x",
-        pause_threshold=60.0,   # allow long recordings
-    )
-    if recorded:
-        st.audio(recorded, format="audio/wav")
-        audio_bytes = recorded
-        audio_suffix = ".wav"
+    if HAS_RECORDER:
+        st.caption("Click the microphone icon below to start recording. Click again to stop.")
+        recorded = audio_recorder(
+            text="",
+            recording_color="#e74c3c",
+            neutral_color="#3498db",
+            icon_size="2x",
+            pause_threshold=60.0,   # allow long recordings
+        )
+        if recorded:
+            st.audio(recorded, format="audio/wav")
+            audio_bytes = recorded
+            audio_suffix = ".wav"
+    else:
+        st.warning(
+            "Microphone recording requires the `audio-recorder-streamlit` package.\n\n"
+            "Install it with: `pip install audio-recorder-streamlit`"
+        )
 
 if audio_bytes is not None:
     if st.button("🔍 Analyze Audio", type="primary"):
