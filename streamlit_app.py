@@ -6,6 +6,7 @@ import tempfile
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+from audio_recorder_streamlit import audio_recorder
 
 st.set_page_config(
     page_title="Voice Sentiment Analyzer",
@@ -207,22 +208,48 @@ def detect_change_points(segments: list[dict]) -> list[dict]:
 # ---------------------------------------------------------------------------
 st.title("🎙️ Voice Sentiment Analyzer")
 st.markdown("""
-Upload an audio file to transcribe speech and analyze emotions over time.
-Supported formats: **WAV, MP3, M4A, OGG**
+Upload an audio file **or record directly from your microphone** to
+transcribe speech and analyze emotions over time.
 """)
 
-uploaded_file = st.file_uploader("Choose an audio file", type=["wav", "mp3", "m4a", "ogg"])
+# ---------------------------------------------------------------------------
+# Input: Upload OR Record
+# ---------------------------------------------------------------------------
+tab_upload, tab_mic = st.tabs(["📁 Upload File", "🎤 Record from Mic"])
 
-if uploaded_file is not None:
-    st.audio(uploaded_file, format='audio/wav')
+audio_bytes = None
+audio_suffix = ".wav"
 
+with tab_upload:
+    uploaded_file = st.file_uploader(
+        "Choose an audio file", type=["wav", "mp3", "m4a", "ogg"]
+    )
+    if uploaded_file is not None:
+        st.audio(uploaded_file, format="audio/wav")
+        audio_bytes = uploaded_file.getvalue()
+        audio_suffix = os.path.splitext(uploaded_file.name)[1] or ".wav"
+
+with tab_mic:
+    st.caption("Click the microphone icon below to start recording. Click again to stop.")
+    recorded = audio_recorder(
+        text="",
+        recording_color="#e74c3c",
+        neutral_color="#3498db",
+        icon_size="2x",
+        pause_threshold=60.0,   # allow long recordings
+    )
+    if recorded:
+        st.audio(recorded, format="audio/wav")
+        audio_bytes = recorded
+        audio_suffix = ".wav"
+
+if audio_bytes is not None:
     if st.button("🔍 Analyze Audio", type="primary"):
         try:
             with st.spinner("Transcribing and Analyzing..."):
                 # Save to temp file
-                suffix = os.path.splitext(uploaded_file.name)[1] or ".wav"
-                with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
-                    tmp.write(uploaded_file.getvalue())
+                with tempfile.NamedTemporaryFile(delete=False, suffix=audio_suffix) as tmp:
+                    tmp.write(audio_bytes)
                     tmp_path = tmp.name
 
                 try:
