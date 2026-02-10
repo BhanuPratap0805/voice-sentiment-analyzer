@@ -77,11 +77,26 @@ def _fmt(seconds: float) -> str:
 
 
 def _check_excitement(scores: dict[str, float]) -> tuple[bool, float]:
-    """Detect excitement from high joy + surprise combination."""
+    """Detect excitement from joy + surprise signals.
+
+    Uses relaxed thresholds so excitement actually surfaces in real audio:
+      - Both joy and surprise moderately present  (0.15 / 0.08)
+      - One strong + the other slightly present   (0.30 / 0.05)
+      - Very high joy alone (≥ 0.50) also counts as excited
+    """
     joy = scores.get("joy", 0)
     surprise = scores.get("surprise", 0)
-    if (joy >= 0.20 and surprise >= 0.10) or (surprise >= 0.20 and joy >= 0.10):
-        return True, round(joy * 0.6 + surprise * 0.4, 3)
+
+    excited = (
+        (joy >= 0.15 and surprise >= 0.08)
+        or (surprise >= 0.15 and joy >= 0.08)
+        or (joy >= 0.30 and surprise >= 0.05)
+        or (surprise >= 0.30 and joy >= 0.05)
+        or (joy >= 0.50)  # very high joy alone → excitement
+    )
+    if excited:
+        conf = round(joy * 0.6 + surprise * 0.4, 3)
+        return True, max(conf, 0.15)  # floor so confidence isn't tiny
     return False, 0.0
 
 
