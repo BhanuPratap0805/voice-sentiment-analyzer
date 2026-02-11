@@ -163,6 +163,12 @@ def classify_emotion(text: str, emotion_clf) -> dict:
 
     Returns a dict with keys: emotion, confidence, scores.
     """
+    # Truncate to the model's max token length (512) to avoid
+    # "index out of bounds" errors from positional embeddings.
+    tokenizer = emotion_clf.tokenizer
+    tokens = tokenizer.encode(text, truncation=True, max_length=512)
+    text = tokenizer.decode(tokens, skip_special_tokens=True)
+
     emotions = emotion_clf(text)[0]
     score_dict = {e["label"]: e["score"] for e in emotions}
 
