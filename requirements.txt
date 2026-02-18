@@ -1,8 +1,9 @@
 flask
 openai-whisper
-transformers
+transformers>=4.48.0,<5.0.0
 torch
 gunicorn
 streamlit>=1.33.0
 plotly
 pandas
+numpy<2.4
