@@ -1,8 +1,8 @@
 # Voice Sentiment Analyzer
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://voice-sentiment-analyzer.streamlit.app)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://voice-sentiment-analyzer-bubmy7ner9zrcxwxyggpvp.streamlit.app/)
 
-🔗 **Live Demo:** [https://voice-sentiment-analyzer.streamlit.app](https://voice-sentiment-analyzer.streamlit.app)
+🔗 **Live Demo:** [https://voice-sentiment-analyzer-bubmy7ner9zrcxwxyggpvp.streamlit.app](https://voice-sentiment-analyzer-bubmy7ner9zrcxwxyggpvp.streamlit.app/)
 
 A web application that analyzes voice sentiment from audio files using OpenAI's Whisper for transcription and a Hugging Face model for emotion classification.
 
