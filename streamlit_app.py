@@ -816,7 +816,17 @@ if audio_bytes is not None:
                     tmp_path = tmp.name
 
                 try:
-                    result = asr_model.transcribe(tmp_path)
+                    try:
+                        result = asr_model.transcribe(tmp_path)
+                    except RuntimeError as re:
+                        if "reshape" in str(re) or "0 elements" in str(re):
+                            st.error(
+                                "⚠️ The audio is too short or contains no audible speech. "
+                                "Please upload a longer recording (at least 1-2 seconds of clear speech)."
+                            )
+                            st.stop()
+                        raise  # re-raise if it's a different RuntimeError
+
                     raw_segments = result.get("segments", [])
                     full_text = result.get("text", "")
 
